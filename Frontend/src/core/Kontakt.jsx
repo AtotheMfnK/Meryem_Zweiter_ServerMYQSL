@@ -1,55 +1,53 @@
 import React, { useState } from 'react';
 
 const Kontakt = () => {
-  const [showForm, setShowForm] = useState(false);
+  // States für Formularfelder
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [nachricht, setNachricht] = useState('');
 
+  // State für Formular-Anzeige
+  const [showForm, setShowForm] = useState(false);
+
+  // Formular anzeigen
   const handleClick = () => {
     setShowForm(true);
   };
 
+  // Formular absenden
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Verhindert das Neuladen der Seite
+    e.preventDefault();
 
-    // URL deines Backends (anpassen!)
-    const url = 'http://localhost:3000/api/saveEmail';
+    // Daten an das Backend senden
+    const response = await fetch('http://localhost:3000/api/kontakt', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, nachricht }),
+    });
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Korrigiert: Großbuchstaben und Bindestrich
-        },
-        body: JSON.stringify({ email, message }), // Daten aus dem Formular
-      });
+    // Antwort verarbeiten (einfach nur zurücksetzen)
+    const result = await response.json();
+    console.log(result); // Optional: Antwort in der Konsole anzeigen
 
-      const result = await response.json();
-      if (response.ok) {
-        alert('Erfolg: ' + result.message);
-      } else {
-        alert('Fehler: ' + result.error);
-      }
-    } catch (error) {
-      console.error('Netzwerkfehler:', error);
-      alert('Netzwerkfehler. Bitte später erneut versuchen.');
-    }
+    // Formular zurücksetzen
+    setEmail('');
+    setNachricht('');
   };
 
   return (
     <>
       <div>Kontakt</div>
       <h3>So kontaktierst Du uns</h3>
-      <p>Werde einen Kontakt reicher und hinterlasse Deine Email</p>
-      <button onClick={handleClick}>Click here</button>
+      <p>Werde einen Kontakt reicher und hinterlasse Deine E-Mail</p>
+      <button onClick={handleClick}>Formular anzeigen</button>
 
       {showForm && (
         <form onSubmit={handleSubmit}>
           <div>
-            <label>Email:</label><br />
+            <label>E-Mail:</label><br />
             <input
               type="email"
-              placeholder="deine@email.de"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -59,9 +57,8 @@ const Kontakt = () => {
           <div>
             <label>Nachricht:</label><br />
             <textarea
-              placeholder="Deine Nachricht"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              value={nachricht}
+              onChange={(e) => setNachricht(e.target.value)}
               required
             />
           </div>

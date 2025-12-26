@@ -1,31 +1,44 @@
-import express from "express";
-import cors from "cors";
-
-
+// Altes CommonJS: const express = require('express');
+// Neues ES-Modul:
+import express from 'express';
+import mysql from 'mysql2/promise'; // Promise-basierte API
 
 const app = express();
-const PORT = 3300;
-app.use(cors());
+
+// Middleware
 app.use(express.json());
 
-
-
-// Beispiel-API 
-app.get("/api/message", (req, res) => {
-  res.json({ msg: "Hallo aus dem Express Backend!" });
+// Rest deines Codes bleibt gleich...
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
 });
 
-app.get("/api/users", async (req,res) => {
-    try {
-        const db = await connectToDatabase();
-        const [rows] = await db.query("SELECT * FROM users");
-        res.json(rows);
-    } catch(err) {
-        response.status(500).json({ error:err.message });
-    }
+
+
+// POST-Endpoint für Kontaktdaten
+app.post('/api/kontakt', async (req, res) => {
+  const { email, nachricht } = req.body;
+  // ... Rest deines Codes ...
 });
 
+// db.js
+async function saveBenutzer(name, email, passwort) {
+  const connection = await getConnection();
+  try {
+    const [result] = await connection.execute(
+      'INSERT INTO benutzer (name, email, passwort) VALUES (?, ?, ?)',
+      [name, email, passwort]
+    );
+    return result;
+  } finally {
+    await connection.end();
+  }
+}
+
+// Server starten
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server läuft auf Port ${PORT}`);
+  console.log(`Server läuft auf http://localhost:${PORT}`);
 });
-
