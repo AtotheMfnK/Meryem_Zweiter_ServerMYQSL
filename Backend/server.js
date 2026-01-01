@@ -1,7 +1,5 @@
-// Altes CommonJS: const express = require('express');
-// Neues ES-Modul:
 import express from 'express';
-import mysql from 'mysql2/promise'; // Promise-basierte API
+
 
 const app = express();
 

@@ -18,7 +18,7 @@ const Kontakt = () => {
     e.preventDefault();
 
     // Daten an das Backend senden
-    const response = await fetch('http://localhost:3000/api/kontakt', {
+    const response = await fetch('http://localhost:3000', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
