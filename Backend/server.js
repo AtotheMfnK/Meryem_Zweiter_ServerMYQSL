@@ -48,12 +48,12 @@ app.post('/api/produkte', async (req, res) => {
 });
 
 
+
 // GET-Endpunkt: Alle Produkte abrufen
 app.get('/api/produkte', async (req, res) => {
   try {
-    const connection = await getConnection();
-    const [rows] = await connection.query('SELECT * FROM produkte;');
-    await connection.end();
+    const db = await connectToDatabase();
+    const [rows] = await db.query('SELECT * FROM produkte;');
     res.json(rows);
   } catch (error) {
     console.error('Fehler beim Abrufen der Produkte:', error);
@@ -65,33 +65,34 @@ app.get('/api/produkte', async (req, res) => {
 app.post('/api/produkte', async (req, res) => {
   try {
     const { typ, kettentyp, laenge, material, preis, bestand } = req.body;
-    const connection = await getConnection();
+    const db = await connectToDatabase();
 
-    const [result] = await connection.query(
+    const [result] = await db.query(
       'INSERT INTO produkte (typ, kettentyp, laenge, material, preis, bestand) VALUES (?, ?, ?, ?, ?, ?)',
       [typ, kettentyp, laenge, material, preis, bestand]
     );
 
-    await connection.end();
     res.status(201).json({ success: true, id: result.insertId });
   } catch (error) {
     console.error('Fehler beim Hinzufügen des Produkts:', error);
     res.status(500).json({ error: 'Fehler beim Hinzufügen des Produkts' });
   }
-})
+});
+
+
 // db.js
-async function saveBenutzer(name, email, passwort) {
-  const connection = await getConnection();
-  try {
-    const [result] = await connection.execute(
-      'INSERT INTO benutzer (name, email, passwort) VALUES (?, ?, ?)',
-      [name, email, passwort]
-    );
-    return result;
-  } finally {
-    await connection.end();
-  }
-}
+// async function saveBenutzer(name, email, passwort) {
+//   const connection = await getConnection();
+//   try {
+//     const [result] = await connection.execute(
+//       'INSERT INTO benutzer (name, email, passwort) VALUES (?, ?, ?)',
+//       [name, email, passwort]
+//     );
+//     return result;
+//   } finally {
+//     await connection.end();
+//   }
+// }
 
 // Server starten
 const PORT = 3000;
