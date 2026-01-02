@@ -2,10 +2,11 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from "./layout/Navbar";
-import Card from './components/card.jsx'
-import Home from './core/Home.jsx'
+import Card from './components/card'
+import Home from './core/Home'
 import About from "./core/About";
 import Kontakt from "./core/Kontakt";
+import { ProduktFormular, ProduktListe } from './components/Produkte/produkte'; // Importiere die Produkt-Komponenten
 
 function App() {
 
@@ -19,6 +20,16 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Kontakt />} />
           <Route path="card" element={<Card />} />
+          <Route
+            path="/produkte"
+            element={
+              <>
+                <h1>Schmuckverwaltung</h1>
+                <ProduktFormular />
+                <ProduktListe />
+              </>
+               }
+          />
         </Routes>
       </BrowserRouter>
     </>
