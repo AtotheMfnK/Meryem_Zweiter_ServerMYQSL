@@ -1,6 +1,8 @@
 import express from 'express';
+import connectToDatabase from "./db.js";
 
 
+app.use(cors()); 
 const app = express();
 
 // Middleware
@@ -21,32 +23,6 @@ app.post('/api/kontakt', async (req, res) => {
   // ... Rest deines Codes ...
 });
 
-// POST-Endpunkt: Neues Schmuckprodukt hinzufügen
-app.post('/api/produkte', async (req, res) => {
-  try {
-    const { typ, kettentyp, laenge, material, preis, bestand } = req.body;
-
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      port: process.env.DB_PORT,
-    });
-
-    const [result] = await connection.query(
-      'INSERT INTO produkte (typ, kettentyp, laenge, material, preis, bestand) VALUES (?, ?, ?, ?, ?, ?)',
-      [typ, kettentyp, laenge, material, preis, bestand]
-    );
-
-    await connection.end();
-    res.status(201).json({ success: true, id: result.insertId });
-  } catch (error) {
-    console.error('Fehler beim Hinzufügen des Produkts:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
 
 
 // GET-Endpunkt: Alle Produkte abrufen
@@ -63,19 +39,41 @@ app.get('/api/produkte', async (req, res) => {
 
 // POST-Endpunkt: Neues Produkt hinzufügen
 app.post('/api/produkte', async (req, res) => {
+  const {
+    typ,
+    kettentyp,
+    laenge,
+    material,
+    preis,
+    bestand
+  } = req.body;
+
   try {
-    const { typ, kettentyp, laenge, material, preis, bestand } = req.body;
     const db = await connectToDatabase();
 
-    const [result] = await db.query(
-      'INSERT INTO produkte (typ, kettentyp, laenge, material, preis, bestand) VALUES (?, ?, ?, ?, ?, ?)',
-      [typ, kettentyp, laenge, material, preis, bestand]
-    );
+    const sql = `
+      INSERT INTO produkte
+      (typ, kettentyp, laenge, material, preis, bestand)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
 
-    res.status(201).json({ success: true, id: result.insertId });
+    const [result] = await db.execute(sql, [
+      typ,
+      kettentyp,
+      laenge,
+      material,
+      preis,
+      bestand
+    ]);
+
+    res.status(201).json({
+      message: "Produkt erfolgreich eingefügt",
+      id: result.insertId
+    });
+
   } catch (error) {
-    console.error('Fehler beim Hinzufügen des Produkts:', error);
-    res.status(500).json({ error: 'Fehler beim Hinzufügen des Produkts' });
+    console.error("Fehler beim Einfügen:", error);
+    res.status(500).json({ error: "Produkt konnte nicht eingefügt werden" });
   }
 });
 

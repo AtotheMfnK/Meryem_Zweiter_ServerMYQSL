@@ -28,4 +28,4 @@ const ProduktListe = () => {
   );
 };
 
-export default ProduktListe;
+export default ;
