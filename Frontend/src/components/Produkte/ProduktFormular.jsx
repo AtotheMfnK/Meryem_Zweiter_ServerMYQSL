@@ -18,7 +18,7 @@ const ProduktFormular = ({ onProduktHinzufuegen }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/api/produkte', {
+      const response = await fetch('http://lilamatchatee.com/api/produkte', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
