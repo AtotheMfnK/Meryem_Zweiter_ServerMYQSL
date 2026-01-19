@@ -1,9 +1,9 @@
 import express from 'express';
 import connectToDatabase from "./db.js";
 
-
-app.use(cors()); 
 const app = express();
+app.use(cors()); 
+
 
 // Middleware
 app.use(express.json());
@@ -93,7 +93,9 @@ app.post('/api/produkte', async (req, res) => {
 // }
 
 // Server starten
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server läuft auf http://localhost:${PORT}`);
+
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server läuft auf Port ${PORT}`);
 });

@@ -7,7 +7,7 @@ const ProduktListe = () => {
   useEffect(() => {
     const fetchProdukte = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/produkte');
+        const response = await fetch('http://lilamatchatee.com/api/produkte');
         const data = await response.json();
         setProdukte(data);
       } catch (error) {
@@ -28,4 +28,4 @@ const ProduktListe = () => {
   );
 };
 
-export default ;
+export default ProduktListe;
